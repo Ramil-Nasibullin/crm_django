@@ -1,17 +1,14 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
-
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
+from django.shortcuts import render
 
-from .models import *
-from .forms import OrderForm, CreateUserForm, CustomerForm
-from .filters import OrderFilter
 from .decorators import *
+from .filters import OrderFilter
+from .forms import OrderForm, CreateUserForm, CustomerForm
+from .models import *
+
+
 # Create your views here.
 
 
@@ -24,8 +21,7 @@ def registerPage(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
-
-            messages.success(request, 'Account was created for: ' + username)
+            messages.success(request, 'Создан акаунт: ' + username)
             return redirect('login')
     context = {
         'form': form
@@ -38,14 +34,13 @@ def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.info(request, 'Username or password is incorrect!')
+            messages.info(request, 'Неправильный логин или пароль!')
     context = {}
     return render(request, 'accounts/login.html', context)
 
@@ -60,9 +55,7 @@ def logoutUser(request):
 def home(request):
     orders = Order.objects.all()
     customers = Customer.objects.all()
-
     total_customers = customers.count()
-
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
@@ -80,11 +73,13 @@ def home(request):
 @ login_required(login_url='login')
 @ allowed_users(allowed_roles=['customer'])
 def userPage(request):
-    orders = request.user.customer.order_set.all()
 
+    orders = request.user.customer.order_set.all()
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
+
+    print('Заказы: ', orders)
 
     context = {
         'orders': orders,
@@ -131,7 +126,7 @@ def customer(request, pk_test):
 
     context = {
         'customer': customer,
-        'orders': orders,
+        'order': orders,
         'order_count': order_count,
         'myFilter': myFilter
     }
@@ -154,8 +149,8 @@ def createOrder(request):
     return render(request, 'accounts/order_form.html', context)
 
 
-@ login_required(login_url='login')
 @ allowed_users(allowed_roles=['admin'])
+@ login_required(login_url='login')
 def updateOrder(request, pk):
     order = Order.objects.get(id=pk)
     form = OrderForm(instance=order)

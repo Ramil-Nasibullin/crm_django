@@ -3,42 +3,63 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+""" Клиент """
+
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null=True)
-    phone = models.CharField(max_length=200, null=True)
-    email = models.CharField(max_length=200, null=True)
-    profile_pic = models.ImageField(default='logo.png', null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Пользователь')
+    name = models.CharField(max_length=200, null=True, verbose_name='Имя')
+    phone = models.CharField(max_length=200, null=True, verbose_name='Телефон')
+    email = models.CharField(max_length=200, null=True, verbose_name='Почта')
+    profile_pic = models.ImageField(default='logo.png', null=True, blank=True, verbose_name='Ваше фото')
+    date_created = models.DateTimeField(auto_now_add=True, null=True, verbose_name='Дата создания')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Клиет"
+        verbose_name_plural = "Клиеты"
+
+
+""" Теги """
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=200, null=True, verbose_name='Название')
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Тег"
+        verbose_name_plural = "Теги"
+
+
+""" Товар """
 
 
 class Product(models.Model):
     CATEGORY = (
-        ('Indoor', 'Indoor'),
-        ('Out door', 'Out door'),
+        ('Indoor', 'В кафе'),
+        ('Out door', 'С собой'),
     )
-    name = models.CharField(max_length=200, null=True)
-    price = models.FloatField(null=True)
-    category = models.CharField(max_length=200, null=True, choices=CATEGORY)
-    discription = models.CharField(max_length=200, null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
+    name = models.CharField(max_length=200, null=True, verbose_name='Наименование')
+    price = models.FloatField(null=True, verbose_name='Стоимость')
+    category = models.CharField(max_length=200, null=True, choices=CATEGORY, verbose_name='Категория')
+    discription = models.CharField(max_length=200, null=True, blank=True, verbose_name='Описание')
+    date_created = models.DateTimeField(auto_now_add=True, null=True, verbose_name='Дата создания')
     tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Товар"
+        verbose_name_plural = "Товары"
 
+
+""" Заказ """
 class Order(models.Model):
     STATUS = (
         ('Pending', 'Pending'),
@@ -54,3 +75,6 @@ class Order(models.Model):
     def __str__(self):
         return self.product.name
 
+    class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"

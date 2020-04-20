@@ -17,20 +17,20 @@
     <ul class="navbar-nav">
       {% if request.user.is_staff %}
       <li class="nav-item active">
-        <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
+        <a class="nav-link" href="{% url 'home' %}">Информация</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'products' %}">Products</a>
+        <a class="nav-link" href="{% url 'products' %}">Товары</a>
       </li>
       {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'account' %}">Settings</a>
+        <a class="nav-link" href="{% url 'account' %}">Настройки</a>
       </li>
       {% endif %}
     </ul>
   </div>
 
-  <span class="hello-msg">Hello, {{request.user}}</span>
-  <span><a class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
+  <span class="hello-msg">Hi, {{request.user}}</span>
+  <span><a class="hello-msg" href="{% url 'logout' %}">LogOut</a></span>
 
 </nav>
